@@ -2,6 +2,7 @@
 
 namespace Dictionaries.Entities;
 
+// Контекст базы данных (позволяет взаимодействовать с БД).
 public class MyDbContext : DbContext
 {
     public MyDbContext(DbContextOptions<MyDbContext> options) : base(options)
@@ -9,8 +10,10 @@ public class MyDbContext : DbContext
 
     }
 
+    // Таблица продукции.
     public DbSet<Product> Products { get; set; }
 
+    // Конфигурация сущностей.
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Product>()
@@ -33,6 +36,7 @@ public class MyDbContext : DbContext
         modelBuilder.Entity<Product>()
             .HasKey(p => p.Id);
 
+        // Инициализация таблицы данными.
         modelBuilder.Entity<Product>().HasData(
         [
             new Product

@@ -16,6 +16,7 @@ builder.Services.AddHttpLogging(options =>
     options.CombineLogs = true;
 });
 
+// Контекст базы данных.
 builder.Services.AddDbContext<MyDbContext>(options =>
 {
     options.UseSqlite("Data Source=mydatabase.dat");
@@ -25,19 +26,16 @@ var app = builder.Build();
 
 app.UseHttpLogging();
 
-app.MapGet("/dictionary", (string code, int[] ids, MyDbContext context) =>
+// GET-метод получения справочника по коду и фильтрацией по id.
+app.MapGet("/dictionary", async (string code, int[] ids, MyDbContext context) =>
 {
     var result = default(object);
 
     if (string.Equals(code, "products", StringComparison.InvariantCultureIgnoreCase))
     {
-        result = context.Products
-        .Where(product => ids.Contains(product.Id))
-        .ToArray();
-    }
-    else
-    {
-        result = code;
+        result = await context.Products
+            .Where(product => ids.Contains(product.Id))
+            .ToArrayAsync();
     }
 
     return result;
@@ -47,6 +45,7 @@ ApplyMigrations();
 
 app.Run();
 
+// Применение миграций.
 void ApplyMigrations()
 {
     var scope = app.Services.CreateScope();
