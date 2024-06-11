@@ -2,6 +2,7 @@
 using Dictionaries.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -9,9 +10,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Dictionaries.Entities.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    partial class MyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240611192234_CreateFactoryTable")]
+    partial class CreateFactoryTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.6");
@@ -40,29 +43,6 @@ namespace Dictionaries.Entities.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("factory", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Name = "Завод 1",
-                            Region = "Пермский край",
-                            Year = 1968
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Name = "Завод 2",
-                            Region = "Татарстан",
-                            Year = 2001
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Name = "Завод 3",
-                            Region = "Пермский край",
-                            Year = 1998
-                        });
                 });
 
             modelBuilder.Entity("Dictionaries.Entities.Product", b =>
