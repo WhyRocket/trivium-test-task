@@ -1,4 +1,5 @@
-﻿using Dictionaries.Entities;
+﻿using Common.Dto;
+using Dictionaries.Entities;
 using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.EntityFrameworkCore;
 
@@ -25,24 +26,35 @@ builder.Services.AddDbContext<MyDbContext>(options =>
 var app = builder.Build();
 
 app.UseHttpLogging();
-
 // GET-метод получения справочника по коду и фильтрацией по id.
 app.MapGet("/dictionary", async (string code, int[] ids, MyDbContext context, HttpContext httpContext) =>
 {
     var result = default(object);
-
     // Получение значений из таблицы "Продукция".
     if (string.Equals(code, "products", StringComparison.InvariantCultureIgnoreCase))
     {
         result = await context.Products
-            .Where(product => ids.Contains(product.Id))
+            .Where(product => ids.Contains(product.Id) || ids.Length == 0)
+            .Select(product => new ProductDto
+            {
+                Id = product.Id,
+                Name = product.Name,
+                Code = product.Code
+            })
             .ToArrayAsync();
     }
     // Получение значений из таблицы "Заводы".
     else if (string.Equals(code, "factories", StringComparison.InvariantCultureIgnoreCase))
     {
         result = await context.Factories
-            .Where(factory => ids.Contains(factory.Id))
+            .Where(factory => ids.Contains(factory.Id) || ids.Length == 0)
+            .Select(factory => new FactoryDto
+            {
+                Id = factory.Id,
+                Name = factory.Name,
+                Region = factory.Region,
+                Year = factory.Year
+            })
             .ToArrayAsync();
     }
     // Обработка некорректного кода справочника.
